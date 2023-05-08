@@ -1,49 +1,25 @@
+import 'react-native-gesture-handler';
+
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
 
-import LetterPhotoInput from "./components/LetterPhotoInput";
-import Card from './shared/card';
-
 import { useState, useCallback } from 'react';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
+import FirstStage from './navigator/FirstStage';
+
+import Remijs from './navigator/Remijs';
+import Riks from './navigator/Riks';
 
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  
-  function breakStringIntoObjects(str) {
-    const objectsList = [];
-  
-    for (let i = 0; i < str.length; i++) {
-      const symbol = str[i];
-      const set = false;
-      const key = (i + 1).toString();
-  
-      const obj = { symbol, set, key };
-      objectsList.push(obj);
-    }
-  
-    return objectsList;
-  }
-
-  const [symbols, setSymbols]=useState(breakStringIntoObjects("Armands"))
-
-  const pressHandler = (key) => {
-    setSymbols((prevSymbols) => {
-      const modifiedList = prevSymbols.map(obj => {
-        if (obj.key === key) {
-          return { ...obj, set: true };
-        }
-        return obj;
-      });
-    
-      return modifiedList;
-    })
-  }
 
   //Fonts loadings
   const [isLoaded] = useFonts({
@@ -61,38 +37,24 @@ export default function App() {
   if (!isLoaded) {
     return null;
   }
+  //-----
 
+
+  
+  const Tab = createBottomTabNavigator();
 
   return (
-    <View style={styles.container} onLayout={handleOnLayout}>
-      <View style={styles.margin}>
-        <FlatList
-          data={symbols}
-          renderItem={({item}) => {
-          return(
-            <Card>
-              <LetterPhotoInput symbolItem={item} pressHandler={pressHandler}></LetterPhotoInput>
-            </Card>
-          )
-        }}
-        />   
-      </View>
-      
-      <StatusBar style="auto" />
+    <View onLayout={handleOnLayout} style={{flex:1}}>
+      <NavigationContainer>
+        <Tab.Navigator initialRouteName='Remijs' id='TabNav'   screenOptions={{headerShown: false}}>
+          <Tab.Screen name="Remijs" component={Remijs} />
+          <Tab.Screen name='Riks' component={Riks}/>
+          <Tab.Screen name='Pirmais posms' component={FirstStage}/>
+        </Tab.Navigator>
+      </NavigationContainer>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-  margin: {
-    marginTop: 60,
-    margin:10,
-  },
-  LPI:{
-    marginBottom:12
-  }
 });
