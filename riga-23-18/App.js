@@ -19,16 +19,26 @@ import Login from './navigator/Login';
 
 import { UserContext } from './shared/UserContext';
 import { supabase } from './shared/supabase';
+import { Feather } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   
   const [user, setUser] = useState({})
+  const [iconsList, setIconsList] = useState({profile:"log-out", first_stage:"rocket-outline", second_stage:"rocket-launch-outline"})
 
   useEffect(() => {
     userUpdate();
   }, []);
+  
+  useEffect(() => {
+    if (user.set){
+      updateIconsList("profile","log-out")
+    }else{updateIconsList("profile","log-in") }
+  }, [user]);
 
   //Fonts loadings
   const [isLoaded] = useFonts({
@@ -47,6 +57,13 @@ export default function App() {
     return null;
   }
   //-----
+
+  const updateIconsList = (name, icon_name) => {
+    setIconsList(prevIconsList => ({
+      ...prevIconsList,
+      [name]: icon_name
+    }));
+  };
 
   function setUserWrapper(set=false, data=null){
     setUser((prevState) => ({
@@ -68,6 +85,8 @@ export default function App() {
 
   const Tab = createBottomTabNavigator();
 
+
+
   return (
     <View onLayout={handleOnLayout} style={{flex:1}}>
       <UserContext.Provider value={{
@@ -77,10 +96,34 @@ export default function App() {
         <NavigationContainer>
           <Tab.Navigator initialRouteName='Remijs' id='TabNav'   screenOptions={{headerShown: false}}>
             <Tab.Screen name="Remijs" component={Remijs} />
-            <Tab.Screen name='Riks' component={Riks}/>
-            <Tab.Screen name='Pirmais posms' component={FirstStage}/>
-            <Tab.Screen name='Ieiet' component={Login}/>
+            
+            <Tab.Screen name='first_stage' component={FirstStage} 
+            options={{
+            tabBarLabel: 'Pirmais posms',
+            tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name={iconsList.first_stage} color={color} size={size} />
+              ),
+            }}/>
+            
+            <Tab.Screen name='second_stage' component={Riks}
+            options={{
+              tabBarLabel: 'Otrais posms',
+              tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name={iconsList.second_stage} color={color} size={size} />
+                ),
+              }}
+            />
+            
+            <Tab.Screen name='profile' component={Login} 
+            options={{
+                tabBarLabel: 'Profils',
+                tabBarIcon: ({ color, size }) => (
+                  <Feather name={iconsList.profile} color={color} size={size} />
+                ),
+              }}/>
+
           </Tab.Navigator>
+        
         </NavigationContainer>
       </UserContext.Provider>
     </View>
