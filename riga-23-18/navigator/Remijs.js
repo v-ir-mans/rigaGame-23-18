@@ -1,6 +1,6 @@
 
 import { StyleSheet, Text, View, Button } from 'react-native';
-
+import { useContext } from 'react';
 
 function Remijs({ navigation }) {
     return ( 
