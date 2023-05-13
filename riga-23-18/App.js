@@ -28,17 +28,16 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   
   const [user, setUser] = useState({})
-  const [iconsList, setIconsList] = useState({profile:"log-out", first_stage:"rocket-outline", second_stage:"rocket-launch-outline"})
+  const [iconsList, setIconsList] = useState({profile:"smile", 
+                                              first_stage:"rocket-outline", 
+                                              second_stage:"rocket-launch-outline",
+                                              info:"info"
+                                            })
 
   useEffect(() => {
     userUpdate();
   }, []);
-  
-  useEffect(() => {
-    if (user.set){
-      updateIconsList("profile","log-out")
-    }else{updateIconsList("profile","log-in") }
-  }, [user]);
+
 
   //Fonts loadings
   const [isLoaded] = useFonts({
@@ -57,6 +56,7 @@ export default function App() {
     return null;
   }
   //-----
+
 
   const updateIconsList = (name, icon_name) => {
     setIconsList(prevIconsList => ({
@@ -81,7 +81,10 @@ export default function App() {
         setUserWrapper()
     }else{
         setUserWrapper(true, data)
-    }}
+    }
+  }
+
+
 
   const Tab = createBottomTabNavigator();
 
@@ -94,8 +97,16 @@ export default function App() {
         update:userUpdate
         }}>
         <NavigationContainer>
-          <Tab.Navigator initialRouteName='Remijs' id='TabNav'   screenOptions={{headerShown: false}}>
-            <Tab.Screen name="Remijs" component={Remijs} />
+          <Tab.Navigator initialRouteName='info' id='TabNav'   screenOptions={{headerShown: false}}>
+            <Tab.Screen name="info" component={Remijs}
+            options={{
+              tabBarLabel: 'Info',
+              tabBarIcon: ({ color, size }) => (
+              <Feather name={iconsList.info} color={color} size={size} />
+            ),
+            }}
+            
+            />
             
             <Tab.Screen name='first_stage' component={FirstStage} 
             options={{
